@@ -20,7 +20,7 @@ export const Route = createFileRoute("/rooms")({
       { property: "og:description", content: "Browse heritage rooms, royal suites, and family rooms at Annapurna Palace." },
     ],
   }),
-  loader: ({ context }) => { context.queryClient.ensureQueryData(qo); },
+  loader: async ({ context }) => { await context.queryClient.ensureQueryData(qo); },
   errorComponent: ({ error }) => <SiteLayout><div className="container mx-auto py-24 text-center text-destructive">{error.message}</div></SiteLayout>,
   notFoundComponent: () => <SiteLayout><div className="container mx-auto py-24 text-center">Not found</div></SiteLayout>,
   component: Page,

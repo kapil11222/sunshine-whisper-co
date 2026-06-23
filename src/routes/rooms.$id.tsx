@@ -23,7 +23,7 @@ export const Route = createFileRoute("/rooms/$id")({
       { name: "description", content: "Reserve your stay at Annapurna Palace." },
     ],
   }),
-  loader: ({ context, params }) => { context.queryClient.ensureQueryData(qo(params.id)); },
+  loader: async ({ context, params }) => { await context.queryClient.ensureQueryData(qo(params.id)); },
   errorComponent: ({ error }) => <SiteLayout><div className="container mx-auto py-24 text-center text-destructive">{error.message}</div></SiteLayout>,
   notFoundComponent: () => <SiteLayout><div className="container mx-auto py-24 text-center">Room not found</div></SiteLayout>,
   component: Page,
