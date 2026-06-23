@@ -192,7 +192,7 @@ function RoomForm({ initial, onSubmit, loading }: { initial: any; onSubmit: (v: 
         price_per_night: Number(f.price_per_night),
         capacity: Number(f.capacity),
         total_units: Number(f.total_units),
-        amenities: f.amenities.split(",").map((a) => a.trim()).filter(Boolean),
+        amenities: f.amenities.split(",").map((a: string) => a.trim()).filter(Boolean),
         image_url: f.image_url || null,
       });
     }}>
