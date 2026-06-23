@@ -44,28 +44,47 @@ function Home() {
   return (
     <SiteLayout>
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-grain">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-secondary to-background" />
-        <div className="absolute inset-0 -z-10 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, var(--gold) 0, transparent 40%), radial-gradient(circle at 80% 70%, var(--maroon) 0, transparent 40%)" }} />
-        <div className="container mx-auto max-w-7xl px-4 py-16 md:py-28 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="text-xs uppercase tracking-[0.3em] text-gold mb-4">Heritage · Hospitality · Cuisine</div>
-            <h1 className="font-display text-5xl md:text-7xl leading-[1.05] text-ink">
+        <div className="absolute inset-0 -z-10 opacity-20" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, var(--gold) 0, transparent 40%), radial-gradient(circle at 80% 70%, var(--maroon) 0, transparent 40%)" }} />
+        <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-gold/25 blur-3xl animate-pulse-glow -z-10" aria-hidden />
+        <div className="absolute top-1/2 -right-24 h-80 w-80 rounded-full bg-maroon/25 blur-3xl animate-pulse-glow -z-10" aria-hidden />
+        <div className="container mx-auto max-w-7xl px-4 py-14 md:py-28 grid md:grid-cols-2 gap-10 md:gap-12 items-center">
+          <div className="animate-rise">
+            <div className="inline-flex items-center gap-2 text-[10px] sm:text-xs uppercase tracking-[0.3em] text-gold mb-4 px-3 py-1.5 rounded-full border border-gold/40 glass-gold">
+              <Sparkles className="h-3 w-3" /> Heritage · Hospitality · Cuisine
+            </div>
+            <h1 className="font-display text-4xl sm:text-5xl md:text-7xl leading-[1.05] text-ink">
               A taste of <span className="text-gold italic">tradition</span>,<br />
               a stay to <span className="text-maroon italic">remember</span>.
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground max-w-lg">
+            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-muted-foreground max-w-lg">
               Welcome to Annapurna Palace — where royal comfort meets the warmth of authentic Indian dining.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/rooms"><Button size="lg" className="bg-gold text-ink hover:bg-gold/90">Book a Room</Button></Link>
-              <Link to="/reserve"><Button size="lg" variant="outline" className="border-ink text-ink hover:bg-ink hover:text-background">Reserve a Table</Button></Link>
-              <Link to="/menu"><Button size="lg" variant="ghost" className="text-ink hover:text-gold">Pre-Order Menu</Button></Link>
+            <div className="mt-7 sm:mt-8 flex flex-wrap gap-3">
+              <Link to="/rooms" className="flex-1 sm:flex-none min-w-[160px]">
+                <Button size="lg" className="w-full shimmer-gold text-ink border border-gold/60 font-semibold h-12">Book a Room</Button>
+              </Link>
+              <Link to="/reserve" className="flex-1 sm:flex-none min-w-[160px]">
+                <Button size="lg" variant="outline" className="w-full border-ink text-ink hover:bg-ink hover:text-background h-12">Reserve a Table</Button>
+              </Link>
+              <Link to="/menu" className="w-full sm:w-auto">
+                <Button size="lg" variant="ghost" className="w-full text-ink hover:text-gold h-12">Pre-Order Menu →</Button>
+              </Link>
+            </div>
+            <div className="mt-8 flex items-center gap-6 text-xs text-muted-foreground">
+              <div><div className="font-display text-2xl text-ink">25+</div>Heritage rooms</div>
+              <div className="h-8 w-px bg-gold/30" />
+              <div><div className="font-display text-2xl text-ink">120+</div>Signature dishes</div>
+              <div className="h-8 w-px bg-gold/30" />
+              <div><div className="font-display text-2xl text-ink">4.9★</div>Guest rating</div>
             </div>
           </div>
-          <div className="relative flex items-center justify-center" style={{ perspective: "1400px" }}>
-            <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-gold/40 to-maroon/30 blur-3xl animate-pulse-glow" />
-            <img src={logo} alt="Annapurna Palace" className="max-w-md w-full drop-shadow-2xl tilt-3d animate-float" />
+          <div className="relative flex items-center justify-center animate-rise" style={{ perspective: "1400px", animationDelay: "150ms" }}>
+            <div className="absolute inset-0 -z-10 rounded-full gradient-flow opacity-50 blur-3xl" aria-hidden />
+            <div className="absolute inset-6 -z-10 rounded-full border border-gold/40 animate-ornament" aria-hidden />
+            <div className="absolute inset-16 -z-10 rounded-full border border-gold/20 animate-ornament" style={{ animationDelay: "1s" }} aria-hidden />
+            <img src={logo} alt="Annapurna Palace" className="max-w-[280px] sm:max-w-md w-full drop-shadow-2xl tilt-3d animate-float" />
           </div>
         </div>
       </section>
