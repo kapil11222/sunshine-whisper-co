@@ -21,9 +21,11 @@ const dishesQO = queryOptions({ queryKey: ["owner", "dishes"], queryFn: () => ow
 
 export const Route = createFileRoute("/_authenticated/dashboard/menu")({
   head: () => ({ meta: [{ title: "Manage Menu & Rooms" }, { name: "robots", content: "noindex" }] }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(roomsQO);
-    context.queryClient.ensureQueryData(dishesQO);
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(roomsQO),
+      context.queryClient.ensureQueryData(dishesQO),
+    ]);
   },
   errorComponent: ({ error }) => <DashboardLayout title="Manage"><div className="text-destructive">{error.message}</div></DashboardLayout>,
   notFoundComponent: () => <DashboardLayout title="Manage">Not found</DashboardLayout>,
