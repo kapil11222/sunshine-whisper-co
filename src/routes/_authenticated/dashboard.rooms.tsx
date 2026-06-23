@@ -12,7 +12,7 @@ const qo = queryOptions({ queryKey: ["owner", "overview"], queryFn: () => ownerO
 
 export const Route = createFileRoute("/_authenticated/dashboard/rooms")({
   head: () => ({ meta: [{ title: "Room Bookings" }, { name: "robots", content: "noindex" }] }),
-  loader: ({ context }) => { context.queryClient.ensureQueryData(qo); },
+  loader: async ({ context }) => { await context.queryClient.ensureQueryData(qo); },
   errorComponent: ({ error }) => <DashboardLayout title="Room Bookings"><div className="text-destructive">{error.message}</div></DashboardLayout>,
   notFoundComponent: () => <DashboardLayout title="Room Bookings">Not found</DashboardLayout>,
   component: Page,
