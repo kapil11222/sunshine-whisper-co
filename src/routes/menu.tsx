@@ -20,7 +20,7 @@ export const Route = createFileRoute("/menu")({
       { property: "og:description", content: "Authentic Indian dishes. Pre-order for pickup or dine-in." },
     ],
   }),
-  loader: ({ context }) => { context.queryClient.ensureQueryData(qo); },
+  loader: async ({ context }) => { await context.queryClient.ensureQueryData(qo); },
   errorComponent: ({ error }) => <SiteLayout><div className="container mx-auto py-24 text-center text-destructive">{error.message}</div></SiteLayout>,
   notFoundComponent: () => <SiteLayout><div className="container mx-auto py-24 text-center">Not found</div></SiteLayout>,
   component: Page,

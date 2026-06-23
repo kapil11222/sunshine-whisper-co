@@ -1,10 +1,12 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, ShoppingBag, Phone, Mail, MapPin } from "lucide-react";
-import { useState } from "react";
+import { Menu, ShoppingBag, Phone, Mail, MapPin, User, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -19,6 +21,20 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const count = useCart((s) => s.count());
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setEmail(session?.user?.email ?? null);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
@@ -56,6 +72,16 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
                 )}
               </Button>
             </Link>
+            {email ? (
+              <div className="hidden md:flex items-center gap-1">
+                <span className="text-xs text-muted-foreground max-w-[140px] truncate" title={email}>{email}</span>
+                <Button variant="ghost" size="sm" onClick={signOut} aria-label="Sign out"><LogOut className="h-4 w-4" /></Button>
+              </div>
+            ) : (
+              <Link to="/auth" className="hidden md:inline-flex">
+                <Button variant="ghost" size="sm" aria-label="Sign in"><User className="h-4 w-4 mr-1" />Sign In</Button>
+              </Link>
+            )}
             <Link to="/rooms" className="hidden md:inline-flex">
               <Button size="sm" className="bg-gold text-ink hover:bg-gold/90">Book Now</Button>
             </Link>

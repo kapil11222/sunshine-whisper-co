@@ -20,9 +20,11 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Luxury stays and authentic Indian dining. Book rooms, reserve tables, and pre-order meals online." },
     ],
   }),
-  loader: ({ context }) => {
-    context.queryClient.ensureQueryData(roomsQO);
-    context.queryClient.ensureQueryData(dishesQO);
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(roomsQO),
+      context.queryClient.ensureQueryData(dishesQO),
+    ]);
   },
   errorComponent: ErrorBoundary,
   notFoundComponent: () => <SiteLayout><div className="container mx-auto py-24 text-center">Not found.</div></SiteLayout>,
