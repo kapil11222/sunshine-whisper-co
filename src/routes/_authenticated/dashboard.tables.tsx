@@ -32,7 +32,7 @@ function Page() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Ref</TableHead><TableHead>Guest</TableHead><TableHead>When</TableHead>
+              <TableHead>Ref</TableHead><TableHead>Table</TableHead><TableHead>Guest</TableHead><TableHead>When</TableHead>
               <TableHead>Party</TableHead><TableHead>Contact</TableHead><TableHead>Notes</TableHead><TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -40,6 +40,11 @@ function Page() {
             {data.reservations.map((r: any) => (
               <TableRow key={r.id}>
                 <TableCell className="font-mono text-xs">{r.reference}</TableCell>
+                <TableCell>
+                  {r.table_label
+                    ? <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gold/20 border border-gold/40 text-xs font-semibold text-ink">{r.table_label}</span>
+                    : <span className="text-xs text-muted-foreground">—</span>}
+                </TableCell>
                 <TableCell>{r.guest_name}</TableCell>
                 <TableCell className="text-xs">{new Date(r.reserved_at).toLocaleString()}</TableCell>
                 <TableCell>{r.party_size}</TableCell>
@@ -53,7 +58,7 @@ function Page() {
                 </TableCell>
               </TableRow>
             ))}
-            {data.reservations.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No reservations yet</TableCell></TableRow>}
+            {data.reservations.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No reservations yet</TableCell></TableRow>}
           </TableBody>
         </Table>
       </Card>

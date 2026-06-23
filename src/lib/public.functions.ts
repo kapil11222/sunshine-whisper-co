@@ -103,10 +103,28 @@ export const createTableReservation = createServerFn({ method: "POST" })
     contactSchema.extend({
       reserved_at: z.string(),
       party_size: z.number().int().min(1).max(30),
+      table_label: z.string().trim().min(1).max(20).nullable().optional(),
     }).parse(d),
   )
   .handler(async ({ data }) => {
     const sb = await adminClient();
+    // Prevent double-booking the same table within a 2h window
+    if (data.table_label) {
+      const at = new Date(data.reserved_at).getTime();
+      const from = new Date(at - 2 * 3600_000).toISOString();
+      const to = new Date(at + 2 * 3600_000).toISOString();
+      const { data: clash } = await sb
+        .from("table_reservations")
+        .select("id")
+        .eq("table_label", data.table_label)
+        .neq("status", "cancelled")
+        .gte("reserved_at", from)
+        .lte("reserved_at", to)
+        .limit(1);
+      if (clash && clash.length > 0) {
+        throw new Error("That table is already booked for this time. Please pick another.");
+      }
+    }
     const { data: row, error } = await sb
       .from("table_reservations")
       .insert({
@@ -116,11 +134,36 @@ export const createTableReservation = createServerFn({ method: "POST" })
         reserved_at: data.reserved_at,
         party_size: data.party_size,
         notes: data.notes,
+        table_label: data.table_label ?? null,
       })
       .select("reference")
       .single();
     if (error) throw new Error(error.message);
     return row;
+  });
+
+export const listOccupiedTables = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) => z.object({ reserved_at: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await adminClient();
+    const at = new Date(data.reserved_at).getTime();
+    const from = new Date(at - 2 * 3600_000).toISOString();
+    const to = new Date(at + 2 * 3600_000).toISOString();
+    const { data: rows, error } = await sb
+      .from("table_reservations")
+      .select("table_label,guest_name,party_size,reserved_at,status")
+      .neq("status", "cancelled")
+      .not("table_label", "is", null)
+      .gte("reserved_at", from)
+      .lte("reserved_at", to);
+    if (error) throw new Error(error.message);
+    // Strip guest names from public response — only return label + masked initial
+    return (rows ?? []).map((r) => ({
+      table_label: r.table_label as string,
+      party_size: r.party_size,
+      reserved_at: r.reserved_at,
+      initial: (r.guest_name?.[0] ?? "•").toUpperCase(),
+    }));
   });
 
 export const createPreOrder = createServerFn({ method: "POST" })

@@ -1,0 +1,1 @@
+ALTER TABLE public.table_reservations ADD COLUMN IF NOT EXISTS table_label TEXT;
