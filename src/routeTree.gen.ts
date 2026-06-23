@@ -20,6 +20,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RoomsIdRouteImport } from './routes/rooms.$id'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardTablesRouteImport } from './routes/_authenticated/dashboard.tables'
 import { Route as AuthenticatedDashboardRoomsRouteImport } from './routes/_authenticated/dashboard.rooms'
 import { Route as AuthenticatedDashboardOrdersRouteImport } from './routes/_authenticated/dashboard.orders'
@@ -79,6 +80,12 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardTablesRoute =
   AuthenticatedDashboardTablesRouteImport.update({
     id: '/tables',
@@ -119,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -129,12 +137,12 @@ export interface FileRoutesByTo {
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/rooms': typeof RoomsRouteWithChildren
-  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/rooms/$id': typeof RoomsIdRoute
   '/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/_authenticated/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/_authenticated/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders'
     | '/dashboard/rooms'
     | '/dashboard/tables'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -181,12 +191,12 @@ export interface FileRouteTypes {
     | '/preorder'
     | '/reserve'
     | '/rooms'
-    | '/dashboard'
     | '/rooms/$id'
     | '/dashboard/menu'
     | '/dashboard/orders'
     | '/dashboard/rooms'
     | '/dashboard/tables'
+    | '/dashboard'
   id:
     | '__root__'
     | '/'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/orders'
     | '/_authenticated/dashboard/rooms'
     | '/_authenticated/dashboard/tables'
+    | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -297,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/tables': {
       id: '/_authenticated/dashboard/tables'
       path: '/tables'
@@ -333,6 +351,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardOrdersRoute: typeof AuthenticatedDashboardOrdersRoute
   AuthenticatedDashboardRoomsRoute: typeof AuthenticatedDashboardRoomsRoute
   AuthenticatedDashboardTablesRoute: typeof AuthenticatedDashboardTablesRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -341,6 +360,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardOrdersRoute: AuthenticatedDashboardOrdersRoute,
     AuthenticatedDashboardRoomsRoute: AuthenticatedDashboardRoomsRoute,
     AuthenticatedDashboardTablesRoute: AuthenticatedDashboardTablesRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
