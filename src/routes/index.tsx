@@ -63,9 +63,9 @@ function Home() {
               <Link to="/menu"><Button size="lg" variant="ghost" className="text-ink hover:text-gold">Pre-Order Menu</Button></Link>
             </div>
           </div>
-          <div className="relative flex items-center justify-center">
-            <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-gold/30 to-maroon/20 blur-3xl" />
-            <img src={logo} alt="Annapurna Palace" className="max-w-md w-full drop-shadow-2xl" />
+          <div className="relative flex items-center justify-center" style={{ perspective: "1400px" }}>
+            <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-gold/40 to-maroon/30 blur-3xl animate-pulse-glow" />
+            <img src={logo} alt="Annapurna Palace" className="max-w-md w-full drop-shadow-2xl tilt-3d animate-float" />
           </div>
         </div>
       </section>
@@ -79,7 +79,7 @@ function Home() {
             { icon: UtensilsCrossed, title: "Pre-Order Dishes", desc: "Order ahead, dine or take away", to: "/menu" },
           ].map((s) => (
             <Link key={s.to} to={s.to}>
-              <Card className="p-6 hover:shadow-[var(--shadow-elegant)] transition-shadow border-gold/20 hover:border-gold/60 h-full">
+              <Card className="luxe-card p-6 border-gold/20 hover:border-gold/60 h-full bg-gradient-to-br from-card to-secondary/40">
                 <s.icon className="h-8 w-8 text-gold mb-3" />
                 <div className="font-display text-xl text-ink">{s.title}</div>
                 <div className="text-sm text-muted-foreground mt-1">{s.desc}</div>
@@ -98,7 +98,7 @@ function Home() {
         </div>
         <div className="grid md:grid-cols-3 gap-6 mt-6">
           {featuredRooms.map((r) => (
-            <Card key={r.id} className="overflow-hidden border-gold/20 group">
+            <Card key={r.id} className="luxe-card overflow-hidden border-gold/20 group">
               <div className="aspect-[4/3] overflow-hidden">
                 <img src={r.image_url ?? ""} alt={r.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
               </div>
@@ -127,7 +127,7 @@ function Home() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {featuredDishes.map((d) => (
-              <Card key={d.id} className="overflow-hidden border-gold/20">
+              <Card key={d.id} className="luxe-card overflow-hidden border-gold/20">
                 <div className="aspect-[5/3] overflow-hidden">
                   <img src={d.image_url ?? ""} alt={d.name} className="h-full w-full object-cover" />
                 </div>
@@ -155,7 +155,7 @@ function Home() {
           Whether it's a family weekend, a quiet dinner, or a grand celebration — Annapurna Palace is ready to host you.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link to="/rooms"><Button size="lg" className="bg-gold text-ink hover:bg-gold/90">Book a Room</Button></Link>
+          <Link to="/rooms"><Button size="lg" className="shimmer-gold text-ink border border-gold/60 font-semibold">Book a Room</Button></Link>
           <Link to="/reserve"><Button size="lg" variant="outline" className="border-ink text-ink hover:bg-ink hover:text-background">Reserve a Table</Button></Link>
         </div>
       </section>
