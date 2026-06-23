@@ -11,7 +11,7 @@ const qo = queryOptions({ queryKey: ["owner", "overview"], queryFn: () => ownerO
 
 export const Route = createFileRoute("/_authenticated/dashboard/tables")({
   head: () => ({ meta: [{ title: "Table Reservations" }, { name: "robots", content: "noindex" }] }),
-  loader: ({ context }) => { context.queryClient.ensureQueryData(qo); },
+  loader: async ({ context }) => { await context.queryClient.ensureQueryData(qo); },
   errorComponent: ({ error }) => <DashboardLayout title="Table Reservations"><div className="text-destructive">{error.message}</div></DashboardLayout>,
   notFoundComponent: () => <DashboardLayout title="Table Reservations">Not found</DashboardLayout>,
   component: Page,
