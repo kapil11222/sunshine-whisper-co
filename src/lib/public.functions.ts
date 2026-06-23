@@ -11,6 +11,11 @@ function publicClient() {
   );
 }
 
+async function adminClient() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin;
+}
+
 export const listRooms = createServerFn({ method: "GET" }).handler(async () => {
   const sb = publicClient();
   const { data, error } = await sb
@@ -65,7 +70,7 @@ export const createRoomBooking = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    const sb = publicClient();
+    const sb = await adminClient();
     const { data: room, error: rErr } = await sb
       .from("rooms").select("price_per_night").eq("id", data.room_id).maybeSingle();
     if (rErr || !room) throw new Error("Room unavailable");
@@ -101,7 +106,7 @@ export const createTableReservation = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    const sb = publicClient();
+    const sb = await adminClient();
     const { data: row, error } = await sb
       .from("table_reservations")
       .insert({
@@ -130,7 +135,7 @@ export const createPreOrder = createServerFn({ method: "POST" })
     }).parse(d),
   )
   .handler(async ({ data }) => {
-    const sb = publicClient();
+    const sb = await adminClient();
     const ids = data.items.map((i) => i.dish_id);
     const { data: dishes, error: dErr } = await sb
       .from("dishes").select("id,name,price").in("id", ids).eq("is_available", true);
