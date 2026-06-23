@@ -253,6 +253,7 @@ export type Database = {
           reference: string
           reserved_at: string
           status: Database["public"]["Enums"]["booking_status"]
+          table_label: string | null
           updated_at: string
         }
         Insert: {
@@ -266,6 +267,7 @@ export type Database = {
           reference?: string
           reserved_at: string
           status?: Database["public"]["Enums"]["booking_status"]
+          table_label?: string | null
           updated_at?: string
         }
         Update: {
@@ -279,6 +281,7 @@ export type Database = {
           reference?: string
           reserved_at?: string
           status?: Database["public"]["Enums"]["booking_status"]
+          table_label?: string | null
           updated_at?: string
         }
         Relationships: []
