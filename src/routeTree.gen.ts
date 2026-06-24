@@ -20,6 +20,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RoomsIdRouteImport } from './routes/rooms.$id'
 import { Route as ReservationReferenceRouteImport } from './routes/reservation.$reference'
+import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardTablesRouteImport } from './routes/_authenticated/dashboard.tables'
@@ -81,6 +82,11 @@ const ReservationReferenceRoute = ReservationReferenceRouteImport.update({
   path: '/reservation/$reference',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderReferenceRoute = OrderReferenceRouteImport.update({
+  id: '/order/$reference',
+  path: '/order/$reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/reserve': typeof ReserveRoute
   '/rooms': typeof RoomsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
   '/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/rooms': typeof RoomsRouteWithChildren
+  '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
   '/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/reserve': typeof ReserveRoute
   '/rooms': typeof RoomsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
   '/_authenticated/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/reserve'
     | '/rooms'
     | '/dashboard'
+    | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
     | '/dashboard/menu'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/preorder'
     | '/reserve'
     | '/rooms'
+    | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
     | '/dashboard/menu'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/reserve'
     | '/rooms'
     | '/_authenticated/dashboard'
+    | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
     | '/_authenticated/dashboard/menu'
@@ -239,6 +251,7 @@ export interface RootRouteChildren {
   PreorderRoute: typeof PreorderRoute
   ReserveRoute: typeof ReserveRoute
   RoomsRoute: typeof RoomsRouteWithChildren
+  OrderReferenceRoute: typeof OrderReferenceRoute
   ReservationReferenceRoute: typeof ReservationReferenceRoute
 }
 
@@ -319,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/reservation/$reference'
       fullPath: '/reservation/$reference'
       preLoaderRoute: typeof ReservationReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$reference': {
+      id: '/order/$reference'
+      path: '/order/$reference'
+      fullPath: '/order/$reference'
+      preLoaderRoute: typeof OrderReferenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -419,6 +439,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreorderRoute: PreorderRoute,
   ReserveRoute: ReserveRoute,
   RoomsRoute: RoomsRouteWithChildren,
+  OrderReferenceRoute: OrderReferenceRoute,
   ReservationReferenceRoute: ReservationReferenceRoute,
 }
 export const routeTree = rootRouteImport
