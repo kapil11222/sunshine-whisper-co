@@ -7,6 +7,7 @@ import { formatINR, useCart } from "@/lib/cart-store";
 import { Plus, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { DishRowSkeleton } from "@/components/luxe-skeleton";
 
 const qo = queryOptions({ queryKey: ["public", "dishes"], queryFn: () => listDishes() });
 
@@ -20,6 +21,15 @@ export const Route = createFileRoute("/menu")({
     ],
   }),
   loader: async ({ context }) => { await context.queryClient.ensureQueryData(qo); },
+  pendingComponent: () => (
+    <SiteLayout>
+      <div className="container mx-auto max-w-2xl px-4 py-16 space-y-3">
+        <div className="luxe-skeleton h-10 w-1/2 rounded mx-auto" />
+        <div className="luxe-skeleton h-4 w-3/4 rounded mx-auto" />
+        <div className="mt-8 space-y-2">{Array.from({ length: 6 }).map((_, i) => <DishRowSkeleton key={i} />)}</div>
+      </div>
+    </SiteLayout>
+  ),
   errorComponent: ({ error }) => <SiteLayout><div className="container mx-auto py-24 text-center text-destructive">{error.message}</div></SiteLayout>,
   notFoundComponent: () => <SiteLayout><div className="container mx-auto py-24 text-center">Not found</div></SiteLayout>,
   component: Page,

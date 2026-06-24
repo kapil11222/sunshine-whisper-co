@@ -7,6 +7,7 @@ import { useCart } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -98,6 +99,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            <ThemeToggle className="hidden sm:inline-flex" />
             <Link to="/preorder">
               <Button variant="ghost" size="sm" className="relative hover:text-gold">
                 <ShoppingBag className="h-4 w-4" />
@@ -188,6 +190,10 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
           <div className="border-t border-gold/20 p-4 space-y-3">
+            <div className="flex items-center justify-between px-1 pb-1">
+              <span className="text-xs text-muted-foreground">Appearance</span>
+              <ThemeToggle />
+            </div>
             <Link to="/rooms" onClick={() => setOpen(false)}>
               <Button className="w-full shimmer-gold text-ink border border-gold/60 font-semibold h-11">Book a Room</Button>
             </Link>

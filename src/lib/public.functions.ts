@@ -166,6 +166,23 @@ export const listOccupiedTables = createServerFn({ method: "GET" })
     }));
   });
 
+export const cancelTableReservation = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    z.object({ reference: z.string().trim().min(3).max(40) }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const sb = await adminClient();
+    const { data: row, error } = await sb
+      .from("table_reservations")
+      .update({ status: "cancelled" })
+      .eq("reference", data.reference)
+      .select("reference,status")
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("Reservation not found");
+    return row;
+  });
+
 export const createPreOrder = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     contactSchema.extend({

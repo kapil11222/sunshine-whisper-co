@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatINR } from "@/lib/cart-store";
 import { Users } from "lucide-react";
+import { useState } from "react";
+import { RoomDetailModal } from "@/components/room-detail-modal";
+import { RoomCardSkeleton } from "@/components/luxe-skeleton";
 
 const qo = queryOptions({ queryKey: ["public", "rooms"], queryFn: () => listRooms() });
 
@@ -21,6 +24,14 @@ export const Route = createFileRoute("/rooms")({
     ],
   }),
   loader: async ({ context }) => { await context.queryClient.ensureQueryData(qo); },
+  pendingComponent: () => (
+    <SiteLayout>
+      <PageHeader kicker="Accommodations" title="Our Rooms & Suites" subtitle="Loading our finest rooms…" />
+      <div className="container mx-auto max-w-7xl px-4 pb-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        {Array.from({ length: 6 }).map((_, i) => <RoomCardSkeleton key={i} />)}
+      </div>
+    </SiteLayout>
+  ),
   errorComponent: ({ error }) => <SiteLayout><div className="container mx-auto py-24 text-center text-destructive">{error.message}</div></SiteLayout>,
   notFoundComponent: () => <SiteLayout><div className="container mx-auto py-24 text-center">Not found</div></SiteLayout>,
   component: Page,
@@ -28,6 +39,7 @@ export const Route = createFileRoute("/rooms")({
 
 function Page() {
   const { data } = useSuspenseQuery(qo);
+  const [active, setActive] = useState<(typeof data)[number] | null>(null);
   return (
     <SiteLayout>
       <PageHeader kicker="Accommodations" title="Our Rooms & Suites" subtitle="Each room is appointed with traditional touches and modern comforts." />
@@ -35,11 +47,12 @@ function Page() {
         {data.map((r, i) => (
           <Card
             key={r.id}
-            className="luxe-card overflow-hidden border-gold/20 flex flex-col group bg-gradient-to-b from-card to-secondary/40 animate-rise"
+            onClick={() => setActive(r)}
+            className="luxe-card overflow-hidden border-gold/20 flex flex-col group bg-gradient-to-b from-card to-secondary/40 animate-rise cursor-pointer active:scale-[0.98] transition-transform"
             style={{ animationDelay: `${i * 70}ms` }}
           >
             <div className="relative aspect-[4/3] overflow-hidden">
-              <img src={r.image_url ?? ""} alt={r.name} className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-110" />
+              <img src={r.image_url ?? ""} alt={r.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent opacity-80" />
               <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full glass-gold text-[10px] font-semibold uppercase tracking-wider text-ink">
                 <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {r.capacity} guests</span>
@@ -57,13 +70,17 @@ function Page() {
               <div className="flex flex-wrap gap-1 mt-3">
                 {r.amenities.slice(0, 4).map((a) => <Badge key={a} variant="outline" className="text-[10px] border-gold/40 text-ink/80">{a}</Badge>)}
               </div>
-              <Link to="/rooms/$id" params={{ id: r.id }} className="mt-4">
-                <Button className="w-full shimmer-gold text-ink border border-gold/60 font-semibold h-11">Book This Room →</Button>
-              </Link>
+              <div className="mt-4 grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
+                <Button variant="outline" className="border-gold/40 h-11" onClick={() => setActive(r)}>View details</Button>
+                <Link to="/rooms/$id" params={{ id: r.id }}>
+                  <Button className="w-full btn-luxe font-semibold h-11">Book →</Button>
+                </Link>
+              </div>
             </div>
           </Card>
         ))}
       </div>
+      <RoomDetailModal room={active} onOpenChange={(v) => !v && setActive(null)} />
     </SiteLayout>
   );
 }

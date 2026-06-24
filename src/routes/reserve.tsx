@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { createTableReservation, listOccupiedTables } from "@/lib/public.functions";
@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Check, MapPin, Users } from "lucide-react";
+import { MapPin, Users } from "lucide-react";
 import { FloorPlan, TABLES } from "@/components/floor-plan";
 
 export const Route = createFileRoute("/reserve")({
@@ -29,11 +29,30 @@ export const Route = createFileRoute("/reserve")({
 function Page() {
   const reserve = useServerFn(createTableReservation);
   const fetchOccupied = useServerFn(listOccupiedTables);
+  const navigate = useNavigate();
   const now = new Date(); now.setMinutes(0); now.setHours(now.getHours() + 2);
   const defaultDt = now.toISOString().slice(0, 16);
   const [form, setForm] = useState({ guest_name: "", phone: "", email: "", notes: "", reserved_at: defaultDt, party_size: 2 });
   const [tableId, setTableId] = useState<string | null>(null);
-  const [done, setDone] = useState<{ reference: string } | null>(null);
+
+  // Prefill from reschedule
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("ap-reschedule");
+      if (!raw) return;
+      const r = JSON.parse(raw);
+      setForm((f) => ({
+        ...f,
+        guest_name: r.guest_name ?? f.guest_name,
+        phone: r.phone ?? f.phone,
+        email: r.email ?? f.email,
+        notes: r.notes ?? f.notes,
+        party_size: r.party_size ?? f.party_size,
+      }));
+      if (r.table_label) setTableId(r.table_label);
+      localStorage.removeItem("ap-reschedule");
+    } catch {}
+  }, []);
 
   const reservedIso = useMemo(() => new Date(form.reserved_at).toISOString(), [form.reserved_at]);
   const occQuery = useQuery({
@@ -57,23 +76,25 @@ function Page() {
       reserved_at: reservedIso,
       table_label: tableId,
     } }),
-    onSuccess: (r) => { setDone(r as any); toast.success("Reservation received!"); },
+    onSuccess: (r: any) => {
+      const ref = r.reference as string;
+      try {
+        localStorage.setItem(`ap-res-${ref}`, JSON.stringify({
+          reference: ref,
+          table_label: tableId,
+          reserved_at: reservedIso,
+          party_size: Number(form.party_size),
+          guest_name: form.guest_name,
+          phone: form.phone,
+          email: form.email,
+          notes: form.notes,
+        }));
+      } catch {}
+      toast.success("Reservation received!");
+      navigate({ to: "/reservation/$reference", params: { reference: ref } });
+    },
     onError: (e: any) => toast.error(e.message ?? "Failed"),
   });
-
-  if (done) {
-    return (
-      <SiteLayout>
-        <div className="container mx-auto max-w-xl py-20 text-center animate-fade-in">
-          <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-gold to-gold-soft flex items-center justify-center shadow-[0_0_40px_rgba(184,134,47,0.5)] animate-pulse-glow"><Check className="h-10 w-10 text-ink" /></div>
-          <h1 className="font-display text-4xl mt-6">Table Reserved</h1>
-          {tableId && <p className="text-gold mt-2 font-medium">Table {tableId} — {selectedTable?.label}</p>}
-          <div className="text-2xl font-mono text-gold mt-3">{done.reference}</div>
-          <p className="text-muted-foreground mt-4">We'll see you soon. Our team may call to confirm.</p>
-        </div>
-      </SiteLayout>
-    );
-  }
 
   return (
     <SiteLayout>
