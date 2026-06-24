@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { createPreOrder } from "@/lib/public.functions";
@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { formatINR, useCart } from "@/lib/cart-store";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Trash2, Check, Plus, Minus } from "lucide-react";
+import { Trash2, Plus, Minus } from "lucide-react";
 
 export const Route = createFileRoute("/preorder")({
   head: () => ({
@@ -32,9 +32,9 @@ function Page() {
   const total = useCart((s) => s.total());
   const clear = useCart((s) => s.clear);
   const order = useServerFn(createPreOrder);
+  const navigate = useNavigate();
   const dt = new Date(Date.now() + 2 * 3600 * 1000).toISOString().slice(0, 16);
   const [form, setForm] = useState({ guest_name: "", phone: "", email: "", notes: "", scheduled_for: dt, mode: "dine_in" as "dine_in" | "pickup" });
-  const [done, setDone] = useState<{ reference: string; total: number } | null>(null);
 
   const mut = useMutation({
     mutationFn: () =>
@@ -45,23 +45,24 @@ function Page() {
           items: items.map((i) => ({ dish_id: i.dish_id, qty: i.qty })),
         },
       }),
-    onSuccess: (r) => { setDone(r as any); clear(); toast.success("Pre-order placed!"); },
+    onSuccess: (r: any) => {
+      const ref = r.reference as string;
+      try {
+        localStorage.setItem(`ap-order-${ref}`, JSON.stringify({
+          reference: ref,
+          total: r.total,
+          mode: form.mode,
+          scheduled_for: new Date(form.scheduled_for).toISOString(),
+          guest_name: form.guest_name,
+          items: items.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+        }));
+      } catch {}
+      clear();
+      toast.success("Pre-order placed!");
+      navigate({ to: "/order/$reference", params: { reference: ref } });
+    },
     onError: (e: any) => toast.error(e.message ?? "Failed"),
   });
-
-  if (done) {
-    return (
-      <SiteLayout>
-        <div className="container mx-auto max-w-xl py-20 text-center">
-          <div className="mx-auto h-16 w-16 rounded-full bg-gold/20 flex items-center justify-center"><Check className="h-8 w-8 text-gold" /></div>
-          <h1 className="font-display text-4xl mt-6">Pre-Order Placed</h1>
-          <div className="text-2xl font-mono text-gold mt-3">{done.reference}</div>
-          <p className="mt-4">Estimated total: <strong>{formatINR(Number(done.total))}</strong> · Pay at restaurant.</p>
-          <Link to="/menu"><Button variant="outline" className="mt-8">Back to Menu</Button></Link>
-        </div>
-      </SiteLayout>
-    );
-  }
 
   if (items.length === 0) {
     return (
@@ -119,7 +120,7 @@ function Page() {
             <div><Label>Phone</Label><Input required type="tel" maxLength={20} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
             <div><Label>Email</Label><Input required type="email" maxLength={200} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
             <div><Label>Notes</Label><Textarea rows={2} maxLength={500} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} /></div>
-            <Button type="submit" disabled={mut.isPending} className="w-full bg-gold text-ink hover:bg-gold/90">{mut.isPending ? "Placing..." : `Place Pre-Order · ${formatINR(total)}`}</Button>
+          <Button type="submit" disabled={mut.isPending} className="w-full btn-luxe font-semibold h-12">{mut.isPending ? "Placing..." : `Place Pre-Order · ${formatINR(total)}`}</Button>
           </form>
         </Card>
       </div>
