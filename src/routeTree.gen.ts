@@ -21,6 +21,7 @@ import { Route as RoomsIndexRouteImport } from './routes/rooms.index'
 import { Route as RoomsIdRouteImport } from './routes/rooms.$id'
 import { Route as ReservationReferenceRouteImport } from './routes/reservation.$reference'
 import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardTablesRouteImport } from './routes/_authenticated/dashboard.tables'
@@ -87,6 +88,11 @@ const OrderReferenceRoute = OrderReferenceRouteImport.update({
   path: '/order/$reference',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
+  '/api/chat': typeof ApiChatRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -171,6 +179,7 @@ export interface FileRoutesById {
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/preorder'
     | '/reserve'
     | '/dashboard'
+    | '/api/chat'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
     | '/menu'
     | '/preorder'
     | '/reserve'
+    | '/api/chat'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -230,6 +241,7 @@ export interface FileRouteTypes {
     | '/preorder'
     | '/reserve'
     | '/_authenticated/dashboard'
+    | '/api/chat'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -250,6 +262,7 @@ export interface RootRouteChildren {
   MenuRoute: typeof MenuRoute
   PreorderRoute: typeof PreorderRoute
   ReserveRoute: typeof ReserveRoute
+  ApiChatRoute: typeof ApiChatRoute
   OrderReferenceRoute: typeof OrderReferenceRoute
   ReservationReferenceRoute: typeof ReservationReferenceRoute
   RoomsIdRoute: typeof RoomsIdRoute
@@ -342,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderReferenceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -429,6 +449,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenuRoute: MenuRoute,
   PreorderRoute: PreorderRoute,
   ReserveRoute: ReserveRoute,
+  ApiChatRoute: ApiChatRoute,
   OrderReferenceRoute: OrderReferenceRoute,
   ReservationReferenceRoute: ReservationReferenceRoute,
   RoomsIdRoute: RoomsIdRoute,
