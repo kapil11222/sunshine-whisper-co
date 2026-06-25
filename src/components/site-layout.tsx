@@ -233,7 +233,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 safe-pb">
         <div className="mx-3 mb-3 rounded-2xl glass-gold shadow-[0_20px_40px_-20px_rgba(122,31,31,0.4)]">
           <div className="grid grid-cols-5 px-1.5 py-1.5">
-            ([
+            {([
               { to: "/", icon: Home, label: "Home" },
               { to: "/rooms", icon: BedDouble, label: "Rooms" },
               { to: "/menu", icon: UtensilsCrossed, label: "Menu" },
@@ -250,7 +250,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
                   <span>{d.label}</span>
                 </Link>
               );
-            })}
+            })}}
           </div>
         </div>
       </nav>
