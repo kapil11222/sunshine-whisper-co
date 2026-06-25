@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, ShoppingBag, Phone, Mail, MapPin, User, LogOut, X, Home, BedDouble, UtensilsCrossed, CalendarCheck, Sparkles } from "lucide-react";
+import { Menu, ShoppingBag, Phone, Mail, MapPin, User, LogOut, X, Home, BedDouble, UtensilsCrossed, CalendarCheck, Sparkles, LifeBuoy, UserCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ const nav = [
   { to: "/reserve", label: "Reserve Table" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
+  { to: "/help", label: "Help" },
 ];
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
