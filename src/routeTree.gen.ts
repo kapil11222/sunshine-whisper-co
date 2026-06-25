@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as PreorderRouteImport } from './routes/preorder'
 import { Route as MenuRouteImport } from './routes/menu'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -21,8 +22,11 @@ import { Route as RoomsIndexRouteImport } from './routes/rooms.index'
 import { Route as RoomsIdRouteImport } from './routes/rooms.$id'
 import { Route as ReservationReferenceRouteImport } from './routes/reservation.$reference'
 import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as AuthenticatedDashboardTicketsRouteImport } from './routes/_authenticated/dashboard.tickets'
 import { Route as AuthenticatedDashboardTablesRouteImport } from './routes/_authenticated/dashboard.tables'
 import { Route as AuthenticatedDashboardRoomsRouteImport } from './routes/_authenticated/dashboard.rooms'
 import { Route as AuthenticatedDashboardOrdersRouteImport } from './routes/_authenticated/dashboard.orders'
@@ -41,6 +45,11 @@ const PreorderRoute = PreorderRouteImport.update({
 const MenuRoute = MenuRouteImport.update({
   id: '/menu',
   path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -87,15 +96,31 @@ const OrderReferenceRoute = OrderReferenceRouteImport.update({
   path: '/order/$reference',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAccountRoute = AuthenticatedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardTicketsRoute =
+  AuthenticatedDashboardTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardTablesRoute =
@@ -128,10 +153,13 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/help': typeof HelpRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
+  '/account': typeof AuthenticatedAccountRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -140,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/dashboard/tickets': typeof AuthenticatedDashboardTicketsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -147,9 +176,12 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/help': typeof HelpRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
+  '/account': typeof AuthenticatedAccountRoute
+  '/api/chat': typeof ApiChatRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -158,6 +190,7 @@ export interface FileRoutesByTo {
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/dashboard/tickets': typeof AuthenticatedDashboardTicketsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -167,10 +200,13 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/help': typeof HelpRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
+  '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/api/chat': typeof ApiChatRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -179,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/_authenticated/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/_authenticated/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/_authenticated/dashboard/tickets': typeof AuthenticatedDashboardTicketsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -188,10 +225,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/help'
     | '/menu'
     | '/preorder'
     | '/reserve'
+    | '/account'
     | '/dashboard'
+    | '/api/chat'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -200,6 +240,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders'
     | '/dashboard/rooms'
     | '/dashboard/tables'
+    | '/dashboard/tickets'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,9 +248,12 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/help'
     | '/menu'
     | '/preorder'
     | '/reserve'
+    | '/account'
+    | '/api/chat'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -218,6 +262,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders'
     | '/dashboard/rooms'
     | '/dashboard/tables'
+    | '/dashboard/tickets'
     | '/dashboard'
   id:
     | '__root__'
@@ -226,10 +271,13 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/help'
     | '/menu'
     | '/preorder'
     | '/reserve'
+    | '/_authenticated/account'
     | '/_authenticated/dashboard'
+    | '/api/chat'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -238,6 +286,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/orders'
     | '/_authenticated/dashboard/rooms'
     | '/_authenticated/dashboard/tables'
+    | '/_authenticated/dashboard/tickets'
     | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -247,9 +296,11 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  HelpRoute: typeof HelpRoute
   MenuRoute: typeof MenuRoute
   PreorderRoute: typeof PreorderRoute
   ReserveRoute: typeof ReserveRoute
+  ApiChatRoute: typeof ApiChatRoute
   OrderReferenceRoute: typeof OrderReferenceRoute
   ReservationReferenceRoute: typeof ReservationReferenceRoute
   RoomsIdRoute: typeof RoomsIdRoute
@@ -277,6 +328,13 @@ declare module '@tanstack/react-router' {
       path: '/menu'
       fullPath: '/menu'
       preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -342,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderReferenceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -349,11 +414,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/account': {
+      id: '/_authenticated/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthenticatedAccountRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/tickets': {
+      id: '/_authenticated/dashboard/tickets'
+      path: '/tickets'
+      fullPath: '/dashboard/tickets'
+      preLoaderRoute: typeof AuthenticatedDashboardTicketsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/tables': {
@@ -392,6 +471,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardOrdersRoute: typeof AuthenticatedDashboardOrdersRoute
   AuthenticatedDashboardRoomsRoute: typeof AuthenticatedDashboardRoomsRoute
   AuthenticatedDashboardTablesRoute: typeof AuthenticatedDashboardTablesRoute
+  AuthenticatedDashboardTicketsRoute: typeof AuthenticatedDashboardTicketsRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
@@ -401,6 +481,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardOrdersRoute: AuthenticatedDashboardOrdersRoute,
     AuthenticatedDashboardRoomsRoute: AuthenticatedDashboardRoomsRoute,
     AuthenticatedDashboardTablesRoute: AuthenticatedDashboardTablesRoute,
+    AuthenticatedDashboardTicketsRoute: AuthenticatedDashboardTicketsRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
@@ -410,10 +491,12 @@ const AuthenticatedDashboardRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccountRoute: typeof AuthenticatedAccountRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccountRoute: AuthenticatedAccountRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
 }
 
@@ -426,9 +509,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  HelpRoute: HelpRoute,
   MenuRoute: MenuRoute,
   PreorderRoute: PreorderRoute,
   ReserveRoute: ReserveRoute,
+  ApiChatRoute: ApiChatRoute,
   OrderReferenceRoute: OrderReferenceRoute,
   ReservationReferenceRoute: ReservationReferenceRoute,
   RoomsIdRoute: RoomsIdRoute,

@@ -1,41 +1,67 @@
-# Premium Upgrade Plan
+# Plan
 
-A focused frontend pass — no schema or business-logic changes.
+## 1. Simplified Login Page (`src/routes/auth.tsx`)
+- Remove the Sign In / Sign Up tab switcher. Render **only one Login form** (email + password). New users (any email except the owner) are auto-created on first login via Supabase `signUp` fallback when `signInWithPassword` returns "Invalid credentials".
+- Add **Continue with Google** button using `lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/auth/callback" })`. Enable the Google provider via `supabase--configure_social_auth`.
+- After auth success: if email == `kapilkjadhav3231@gmail.com` → redirect to `/dashboard` (owner). Otherwise → `/account` (new customer dashboard).
+- Keep the existing owner bootstrap (auto-grants `owner` role to that email on first sign-in).
 
-## 1. Mobile-tuned animations + skeletons
-- Wrap heavy keyframes (`shimmer-gold`, `gradient-flow`, `tilt-3d`, `float`) in a `@media (min-width: 768px)` block so phones get static gold; keep `rise-in` + `fade-in` (cheap transforms only).
-- Add GPU hints (`will-change: transform, opacity`) and shorten durations on `< md`.
-- New `<LuxeSkeleton />` (shimmer over `bg-muted`) used on Menu, Rooms, Floor-plan, Dashboard lists while queries are pending.
+## 2. Customer Dashboard (`/account`)
+New public-authenticated route under `_authenticated/account.tsx` (visible to any signed-in user).
+- **My Room Bookings** — list rows from `room_bookings` where `email = auth user email`.
+- **My Table Reservations** — list rows from `table_reservations` where `email = auth user email`, with link to `/reservation/$reference`.
+- **My Pre-Orders** — list rows from `pre_orders` where `email = auth user email`, with link to `/order/$reference`.
+- **My Support Tickets** — list user's own tickets with status.
+- New server fn `getMyActivity` in `src/lib/customer.functions.ts` using `requireSupabaseAuth` — joins by email from `context.claims.email`.
 
-## 2. Dark mode toggle
-- `ThemeProvider` + `useTheme` (localStorage, system default) toggling `.dark` on `<html>`.
-- Tune `.dark` tokens in `src/styles.css`: deep ink `#0E0B14` bg, ivory text, gold stays `#D9A441` (boosted L for contrast), maroon shifts to `#A23535`. Re-verify AA contrast on mobile.
-- Gold animations preserved (gradient + shimmer use CSS vars).
-- Toggle button (sun/moon) in header + mobile drawer.
+## 3. Help Page & Support Tickets (`/help`)
+- New `support_tickets` table: `id, user_id, email, name, subject, message, status (open|in_progress|closed), reply, created_at, updated_at`. RLS: users see their own; owner role sees all. GRANTs for authenticated + service_role.
+- `/help` route: public page with FAQ + **Raise a Ticket** form (subject, message). If signed in, prefills name/email; otherwise asks for them.
+- Server fns: `createSupportTicket`, `listMyTickets`, `listAllTickets` (owner-only), `updateTicketStatus` (owner-only).
+- Add **Support / Tickets** tab in owner dashboard (`/dashboard/tickets`) showing all tickets with status filter and reply/close actions.
 
-## 3. Cart & Checkout flow
-- Cart drawer (Sheet) opens from header cart icon — list items, qty steppers, subtotal, "Checkout".
-- New route `/checkout`: mobile-first form (name, phone, email, pickup/dine-in toggle, notes), calls existing `createPreOrder` server fn, clears cart, navigates to confirmation.
-- New route `/order/$reference`: confirmation screen with reference, items, total, ETA note, "Back to menu".
+## 4. AI Help Chatbot
+- Floating chat widget (`src/components/help-chatbot.tsx`) shown on `/help` (and optionally on every page via SiteLayout). Uses AI SDK `useChat` with `DefaultChatTransport`.
+- Backend: TanStack server route `src/routes/api/chat.ts` that streams via Lovable AI Gateway using `google/gemini-3-flash-preview` with a system prompt describing Annapurna Palace (menu categories, room types, contact, booking instructions).
+- Provider helper: `src/lib/ai-gateway.server.ts` per the standard pattern.
+- The chatbot can answer FAQs and direct users to `/rooms`, `/menu`, `/reserve`, or `/help` for ticket creation.
 
-## 4. Reservation confirmation screen
-- Replace inline success in `reserve.tsx` with a dedicated `/reservation/$reference` route showing table label, date/time, party size, guest name, reference.
-- Buttons: **Cancel** (calls new `cancelTableReservation` server fn — sets status='cancelled', reference-gated, no auth) and **Reschedule** (returns to `/reserve?ref=…` prefilled).
-- Reference stored in localStorage so the page survives refresh.
+## 5. Navigation Updates
+- Add **Help** + **My Account** links in `site-layout.tsx` header + mobile drawer/bottom dock.
+- Add **Tickets** tab in `dashboard-layout.tsx` sidebar.
 
-## 5. Luxury room details modal (mobile)
-- On `/rooms`, tapping a card opens a full-screen `Dialog` (mobile) / large modal (desktop): hero image, swipeable gallery (extra images from `rooms.gallery` if present, fallback to single image), amenities chips, price, "Book this room" CTA → `/rooms/$id`.
-- Uses existing `Carousel` shadcn component for gallery.
+## Technical Details
 
-## 6. Premium polish
-- New ornamental SVG dividers on hero + section headers.
-- Soft noise overlay on dark mode.
-- Buttons get unified `.btn-luxe` (gradient border + inner shadow).
-- Cards lift on touch (`active:scale-[0.98]`) for mobile feedback.
+**Files to create**
+- `src/routes/_authenticated/account.tsx`
+- `src/routes/_authenticated/dashboard.tickets.tsx`
+- `src/routes/help.tsx`
+- `src/routes/api/chat.ts`
+- `src/components/help-chatbot.tsx`
+- `src/lib/customer.functions.ts`
+- `src/lib/support.functions.ts`
+- `src/lib/ai-gateway.server.ts`
+- Migration: `support_tickets` table + RLS + GRANTs
 
-## Technical notes
-- New server fn: `cancelTableReservation({ reference })` in `src/lib/public.functions.ts` — no DB schema change, just sets `status='cancelled'` where reference matches (public, rate-limit-friendly).
-- New files: `src/components/theme-provider.tsx`, `src/components/theme-toggle.tsx`, `src/components/luxe-skeleton.tsx`, `src/components/cart-drawer.tsx`, `src/components/room-detail-modal.tsx`, `src/routes/checkout.tsx`, `src/routes/order.$reference.tsx`, `src/routes/reservation.$reference.tsx`.
-- Edited: `src/styles.css`, `src/components/site-layout.tsx`, `src/routes/__root.tsx`, `src/routes/menu.tsx`, `src/routes/rooms.tsx`, `src/routes/reserve.tsx`, `src/lib/public.functions.ts`.
+**Files to edit**
+- `src/routes/auth.tsx` — single login form + Google button + role-based redirect
+- `src/components/site-layout.tsx` — Help + Account links
+- `src/components/dashboard-layout.tsx` — Tickets sidebar item
+- `src/lib/owner.functions.ts` — `listAllTickets`, `updateTicketStatus`
 
-Approve and I'll implement in one pass.
+**Auth flow**
+- `signInWithPassword` → if error "Invalid login credentials" and email != owner → fallback `signUp({ email, password, options: { emailRedirectTo: window.location.origin } })` then sign in.
+- Auto-confirm email signups must be enabled (via `configure_auth`) so customers don't need to verify email before reaching the dashboard.
+
+**Google OAuth**
+- `configure_social_auth(["google"])` — uses Lovable-managed credentials, no setup needed from user.
+- Callback page: rely on existing `/auth` route to detect signed-in state and redirect by role.
+
+**Owner detection helper** — `isOwnerEmail(email)` constant `kapilkjadhav3231@gmail.com` used in `/auth` post-login and `_authenticated/route.tsx` for default landing.
+
+**AI chatbot**
+- Server route returns `result.toUIMessageStreamResponse()`.
+- Client renders `message.parts` as markdown.
+- Composer stays focused after send.
+
+Confirm and I'll build it end-to-end.

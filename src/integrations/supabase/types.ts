@@ -241,6 +241,45 @@ export type Database = {
         }
         Relationships: []
       }
+      support_tickets: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          reply: string
+          status: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          reply?: string
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          reply?: string
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       table_reservations: {
         Row: {
           created_at: string
@@ -324,6 +363,7 @@ export type Database = {
       app_role: "owner"
       booking_status: "pending" | "confirmed" | "cancelled" | "completed"
       order_mode: "pickup" | "dine_in"
+      ticket_status: "open" | "in_progress" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -454,6 +494,7 @@ export const Constants = {
       app_role: ["owner"],
       booking_status: ["pending", "confirmed", "cancelled", "completed"],
       order_mode: ["pickup", "dine_in"],
+      ticket_status: ["open", "in_progress", "closed"],
     },
   },
 } as const
