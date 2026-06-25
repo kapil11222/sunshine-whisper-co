@@ -250,7 +250,7 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
                   <span>{d.label}</span>
                 </Link>
               );
-            })}}
+            })}
           </div>
         </div>
       </nav>
