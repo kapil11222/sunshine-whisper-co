@@ -233,13 +233,13 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 safe-pb">
         <div className="mx-3 mb-3 rounded-2xl glass-gold shadow-[0_20px_40px_-20px_rgba(122,31,31,0.4)]">
           <div className="grid grid-cols-5 px-1.5 py-1.5">
-            {[
+            ([
               { to: "/", icon: Home, label: "Home" },
               { to: "/rooms", icon: BedDouble, label: "Rooms" },
-              { to: "/reserve", icon: CalendarCheck, label: "Table" },
               { to: "/menu", icon: UtensilsCrossed, label: "Menu" },
-              { to: "/preorder", icon: ShoppingBag, label: "Cart" },
-            ].map((d) => {
+              email ? { to: "/account", icon: UserCircle2, label: "Me" } : { to: "/reserve", icon: CalendarCheck, label: "Table" },
+              { to: "/help", icon: LifeBuoy, label: "Help" },
+            ] as const).map((d) => {
               const active = pathname === d.to;
               return (
                 <Link key={d.to} to={d.to} className={cn(
