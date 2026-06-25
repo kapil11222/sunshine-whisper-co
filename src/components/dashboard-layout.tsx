@@ -1,6 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, BedDouble, CalendarCheck, UtensilsCrossed, Menu as MenuIcon, LogOut } from "lucide-react";
+import { LayoutDashboard, BedDouble, CalendarCheck, UtensilsCrossed, Menu as MenuIcon, LogOut, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ const items = [
   { to: "/dashboard/tables", label: "Table Reservations", icon: CalendarCheck },
   { to: "/dashboard/orders", label: "Pre-Orders", icon: UtensilsCrossed },
   { to: "/dashboard/menu", label: "Manage Menu", icon: MenuIcon },
+  { to: "/dashboard/tickets", label: "Support Tickets", icon: LifeBuoy },
 ] as const;
 
 export function DashboardLayout({ children, title }: { children: React.ReactNode; title: string }) {
