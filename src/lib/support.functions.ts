@@ -76,7 +76,7 @@ export const updateTicket = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertOwner(context);
-    const patch: Record<string, unknown> = {};
+    const patch: { status?: "open" | "in_progress" | "closed"; reply?: string } = {};
     if (data.status) patch.status = data.status;
     if (data.reply !== undefined) patch.reply = data.reply;
     const { error } = await context.supabase
