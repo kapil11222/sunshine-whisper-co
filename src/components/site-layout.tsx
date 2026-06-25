@@ -113,7 +113,9 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             </Link>
             {email ? (
               <div className="hidden md:flex items-center gap-1">
-                <span className="text-xs text-muted-foreground max-w-[140px] truncate" title={email}>{email}</span>
+                <Link to="/account">
+                  <Button variant="ghost" size="sm" className="hover:text-gold"><UserCircle2 className="h-4 w-4 mr-1" />My Account</Button>
+                </Link>
                 <Button variant="ghost" size="sm" onClick={signOut} aria-label="Sign out"><LogOut className="h-4 w-4" /></Button>
               </div>
             ) : (
