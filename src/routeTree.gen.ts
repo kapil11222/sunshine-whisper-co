@@ -26,6 +26,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as AuthenticatedDashboardTicketsRouteImport } from './routes/_authenticated/dashboard.tickets'
 import { Route as AuthenticatedDashboardTablesRouteImport } from './routes/_authenticated/dashboard.tables'
 import { Route as AuthenticatedDashboardRoomsRouteImport } from './routes/_authenticated/dashboard.rooms'
 import { Route as AuthenticatedDashboardOrdersRouteImport } from './routes/_authenticated/dashboard.orders'
@@ -116,6 +117,12 @@ const AuthenticatedDashboardIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardTicketsRoute =
+  AuthenticatedDashboardTicketsRouteImport.update({
+    id: '/tickets',
+    path: '/tickets',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardTablesRoute =
   AuthenticatedDashboardTablesRouteImport.update({
     id: '/tables',
@@ -161,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/dashboard/tickets': typeof AuthenticatedDashboardTicketsRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -182,6 +190,7 @@ export interface FileRoutesByTo {
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/dashboard/tickets': typeof AuthenticatedDashboardTicketsRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -206,6 +215,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/_authenticated/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
   '/_authenticated/dashboard/tables': typeof AuthenticatedDashboardTablesRoute
+  '/_authenticated/dashboard/tickets': typeof AuthenticatedDashboardTicketsRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -230,6 +240,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders'
     | '/dashboard/rooms'
     | '/dashboard/tables'
+    | '/dashboard/tickets'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders'
     | '/dashboard/rooms'
     | '/dashboard/tables'
+    | '/dashboard/tickets'
     | '/dashboard'
   id:
     | '__root__'
@@ -274,6 +286,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/orders'
     | '/_authenticated/dashboard/rooms'
     | '/_authenticated/dashboard/tables'
+    | '/_authenticated/dashboard/tickets'
     | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -415,6 +428,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/tickets': {
+      id: '/_authenticated/dashboard/tickets'
+      path: '/tickets'
+      fullPath: '/dashboard/tickets'
+      preLoaderRoute: typeof AuthenticatedDashboardTicketsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/tables': {
       id: '/_authenticated/dashboard/tables'
       path: '/tables'
@@ -451,6 +471,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardOrdersRoute: typeof AuthenticatedDashboardOrdersRoute
   AuthenticatedDashboardRoomsRoute: typeof AuthenticatedDashboardRoomsRoute
   AuthenticatedDashboardTablesRoute: typeof AuthenticatedDashboardTablesRoute
+  AuthenticatedDashboardTicketsRoute: typeof AuthenticatedDashboardTicketsRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
@@ -460,6 +481,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardOrdersRoute: AuthenticatedDashboardOrdersRoute,
     AuthenticatedDashboardRoomsRoute: AuthenticatedDashboardRoomsRoute,
     AuthenticatedDashboardTablesRoute: AuthenticatedDashboardTablesRoute,
+    AuthenticatedDashboardTicketsRoute: AuthenticatedDashboardTicketsRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
