@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as PreorderRouteImport } from './routes/preorder'
 import { Route as MenuRouteImport } from './routes/menu'
+import { Route as HelpRouteImport } from './routes/help'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
@@ -42,6 +43,11 @@ const PreorderRoute = PreorderRouteImport.update({
 const MenuRoute = MenuRouteImport.update({
   id: '/menu',
   path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpRoute = HelpRouteImport.update({
+  id: '/help',
+  path: '/help',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/help': typeof HelpRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/help': typeof HelpRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/help': typeof HelpRoute
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/help'
     | '/menu'
     | '/preorder'
     | '/reserve'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/help'
     | '/menu'
     | '/preorder'
     | '/reserve'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/contact'
+    | '/help'
     | '/menu'
     | '/preorder'
     | '/reserve'
@@ -259,6 +271,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  HelpRoute: typeof HelpRoute
   MenuRoute: typeof MenuRoute
   PreorderRoute: typeof PreorderRoute
   ReserveRoute: typeof ReserveRoute
@@ -290,6 +303,13 @@ declare module '@tanstack/react-router' {
       path: '/menu'
       fullPath: '/menu'
       preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -446,6 +466,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  HelpRoute: HelpRoute,
   MenuRoute: MenuRoute,
   PreorderRoute: PreorderRoute,
   ReserveRoute: ReserveRoute,
