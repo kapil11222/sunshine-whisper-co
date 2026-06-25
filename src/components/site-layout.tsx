@@ -201,11 +201,16 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
               <Button className="w-full shimmer-gold text-ink border border-gold/60 font-semibold h-11">Book a Room</Button>
             </Link>
             {email ? (
-              <div className="flex items-center justify-between gap-2 px-1">
-                <span className="text-xs text-muted-foreground truncate" title={email}>{email}</span>
-                <Button variant="outline" size="sm" onClick={() => { signOut(); setOpen(false); }}>
-                  <LogOut className="h-4 w-4 mr-1" />Sign out
-                </Button>
+              <div className="space-y-2">
+                <Link to="/account" onClick={() => setOpen(false)}>
+                  <Button variant="outline" className="w-full border-gold/40 h-11"><UserCircle2 className="h-4 w-4 mr-2" />My Account</Button>
+                </Link>
+                <div className="flex items-center justify-between gap-2 px-1">
+                  <span className="text-xs text-muted-foreground truncate" title={email}>{email}</span>
+                  <Button variant="outline" size="sm" onClick={() => { signOut(); setOpen(false); }}>
+                    <LogOut className="h-4 w-4 mr-1" />Sign out
+                  </Button>
+                </div>
               </div>
             ) : (
               <Link to="/auth" onClick={() => setOpen(false)}>
