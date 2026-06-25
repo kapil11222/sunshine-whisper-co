@@ -14,7 +14,7 @@ import { RoomCardSkeleton } from "@/components/luxe-skeleton";
 
 const qo = queryOptions({ queryKey: ["public", "rooms"], queryFn: () => listRooms() });
 
-export const Route = createFileRoute("/rooms")({
+export const Route = createFileRoute("/rooms/")({
   head: () => ({
     meta: [
       { title: "Rooms — Annapurna Palace" },

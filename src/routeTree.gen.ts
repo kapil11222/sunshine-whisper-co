@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RoomsRouteImport } from './routes/rooms'
 import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as PreorderRouteImport } from './routes/preorder'
 import { Route as MenuRouteImport } from './routes/menu'
@@ -18,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoomsIndexRouteImport } from './routes/rooms.index'
 import { Route as RoomsIdRouteImport } from './routes/rooms.$id'
 import { Route as ReservationReferenceRouteImport } from './routes/reservation.$reference'
 import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
@@ -28,11 +28,6 @@ import { Route as AuthenticatedDashboardRoomsRouteImport } from './routes/_authe
 import { Route as AuthenticatedDashboardOrdersRouteImport } from './routes/_authenticated/dashboard.orders'
 import { Route as AuthenticatedDashboardMenuRouteImport } from './routes/_authenticated/dashboard.menu'
 
-const RoomsRoute = RoomsRouteImport.update({
-  id: '/rooms',
-  path: '/rooms',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ReserveRoute = ReserveRouteImport.update({
   id: '/reserve',
   path: '/reserve',
@@ -72,10 +67,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoomsIndexRoute = RoomsIndexRouteImport.update({
+  id: '/rooms/',
+  path: '/rooms/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoomsIdRoute = RoomsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => RoomsRoute,
+  id: '/rooms/$id',
+  path: '/rooms/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ReservationReferenceRoute = ReservationReferenceRouteImport.update({
   id: '/reservation/$reference',
@@ -131,11 +131,11 @@ export interface FileRoutesByFullPath {
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
-  '/rooms': typeof RoomsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
+  '/rooms/': typeof RoomsIndexRoute
   '/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
@@ -150,10 +150,10 @@ export interface FileRoutesByTo {
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
-  '/rooms': typeof RoomsRouteWithChildren
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
+  '/rooms': typeof RoomsIndexRoute
   '/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
@@ -170,11 +170,11 @@ export interface FileRoutesById {
   '/menu': typeof MenuRoute
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
-  '/rooms': typeof RoomsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
+  '/rooms/': typeof RoomsIndexRoute
   '/_authenticated/dashboard/menu': typeof AuthenticatedDashboardMenuRoute
   '/_authenticated/dashboard/orders': typeof AuthenticatedDashboardOrdersRoute
   '/_authenticated/dashboard/rooms': typeof AuthenticatedDashboardRoomsRoute
@@ -191,11 +191,11 @@ export interface FileRouteTypes {
     | '/menu'
     | '/preorder'
     | '/reserve'
-    | '/rooms'
     | '/dashboard'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
+    | '/rooms/'
     | '/dashboard/menu'
     | '/dashboard/orders'
     | '/dashboard/rooms'
@@ -210,10 +210,10 @@ export interface FileRouteTypes {
     | '/menu'
     | '/preorder'
     | '/reserve'
-    | '/rooms'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
+    | '/rooms'
     | '/dashboard/menu'
     | '/dashboard/orders'
     | '/dashboard/rooms'
@@ -229,11 +229,11 @@ export interface FileRouteTypes {
     | '/menu'
     | '/preorder'
     | '/reserve'
-    | '/rooms'
     | '/_authenticated/dashboard'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
+    | '/rooms/'
     | '/_authenticated/dashboard/menu'
     | '/_authenticated/dashboard/orders'
     | '/_authenticated/dashboard/rooms'
@@ -250,20 +250,14 @@ export interface RootRouteChildren {
   MenuRoute: typeof MenuRoute
   PreorderRoute: typeof PreorderRoute
   ReserveRoute: typeof ReserveRoute
-  RoomsRoute: typeof RoomsRouteWithChildren
   OrderReferenceRoute: typeof OrderReferenceRoute
   ReservationReferenceRoute: typeof ReservationReferenceRoute
+  RoomsIdRoute: typeof RoomsIdRoute
+  RoomsIndexRoute: typeof RoomsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/rooms': {
-      id: '/rooms'
-      path: '/rooms'
-      fullPath: '/rooms'
-      preLoaderRoute: typeof RoomsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reserve': {
       id: '/reserve'
       path: '/reserve'
@@ -320,12 +314,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rooms/': {
+      id: '/rooms/'
+      path: '/rooms'
+      fullPath: '/rooms/'
+      preLoaderRoute: typeof RoomsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rooms/$id': {
       id: '/rooms/$id'
-      path: '/$id'
+      path: '/rooms/$id'
       fullPath: '/rooms/$id'
       preLoaderRoute: typeof RoomsIdRouteImport
-      parentRoute: typeof RoomsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/reservation/$reference': {
       id: '/reservation/$reference'
@@ -419,16 +420,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface RoomsRouteChildren {
-  RoomsIdRoute: typeof RoomsIdRoute
-}
-
-const RoomsRouteChildren: RoomsRouteChildren = {
-  RoomsIdRoute: RoomsIdRoute,
-}
-
-const RoomsRouteWithChildren = RoomsRoute._addFileChildren(RoomsRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -438,9 +429,10 @@ const rootRouteChildren: RootRouteChildren = {
   MenuRoute: MenuRoute,
   PreorderRoute: PreorderRoute,
   ReserveRoute: ReserveRoute,
-  RoomsRoute: RoomsRouteWithChildren,
   OrderReferenceRoute: OrderReferenceRoute,
   ReservationReferenceRoute: ReservationReferenceRoute,
+  RoomsIdRoute: RoomsIdRoute,
+  RoomsIndexRoute: RoomsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
