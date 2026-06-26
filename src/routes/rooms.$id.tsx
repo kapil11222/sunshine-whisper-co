@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Users, Check } from "lucide-react";
 import { useEffect } from "react";
 import { useAuthGate } from "@/hooks/use-auth-gate";
+import { showError } from "@/lib/friendly-error";
 
 const qo = (id: string) => queryOptions({ queryKey: ["room", id], queryFn: () => getRoom({ data: { id } }) });
 

@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { MapPin, Users } from "lucide-react";
 import { FloorPlan, TABLES } from "@/components/floor-plan";
 import { useAuthGate } from "@/hooks/use-auth-gate";
+import { showError } from "@/lib/friendly-error";
 
 export const Route = createFileRoute("/reserve")({
   head: () => ({

@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { useAuthGate } from "@/hooks/use-auth-gate";
+import { showError } from "@/lib/friendly-error";
 
 export const Route = createFileRoute("/preorder")({
   head: () => ({
