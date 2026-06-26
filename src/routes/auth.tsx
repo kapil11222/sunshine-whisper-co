@@ -32,6 +32,15 @@ function AuthPage() {
   const finish = (em: string) => {
     if (isOwner(em)) {
       window.location.href = "/dashboard";
+      return;
+    }
+    let target: string | null = null;
+    try {
+      target = sessionStorage.getItem("ap-redirect-after-auth");
+      if (target) sessionStorage.removeItem("ap-redirect-after-auth");
+    } catch {}
+    if (target && target.startsWith("/") && !target.startsWith("//")) {
+      window.location.href = target;
     } else {
       navigate({ to: "/account" });
     }
