@@ -64,7 +64,7 @@ function Page() {
       toast.success("Pre-order placed!");
       navigate({ to: "/order/$reference", params: { reference: ref } });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
+    onError: (e) => showError(e, "We couldn't place your pre-order. Please try again."),
   });
 
   if (items.length === 0) {

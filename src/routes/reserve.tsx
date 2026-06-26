@@ -99,7 +99,7 @@ function Page() {
       toast.success("Reservation received!");
       navigate({ to: "/reservation/$reference", params: { reference: ref } });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
+    onError: (e) => showError(e, "We couldn't confirm your reservation. Please try again."),
   });
 
   return (
@@ -138,7 +138,7 @@ function Page() {
           <form className="space-y-3" onSubmit={(e) => {
             e.preventDefault();
             if (!ensureAuth("Please sign in to reserve a table")) return;
-            if (!tableId) { toast.error("Please pick a table on the floor plan first"); return; }
+            if (!tableId) { toast.error("Please pick a table on the floor plan first."); return; }
             mut.mutate();
           }}>
             <div className="grid grid-cols-2 gap-3">
