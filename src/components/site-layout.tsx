@@ -287,9 +287,18 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             </ul>
           </div>
           <div>
-            <div className="font-display text-gold text-lg mb-3">Owner</div>
-            <p className="text-sm text-background/70 mb-3">Manage bookings, reservations and orders.</p>
-            <Link to="/auth"><Button variant="outline" size="sm" className="bg-transparent border-gold text-gold hover:bg-gold hover:text-ink">Sign In</Button></Link>
+            <div className="font-display text-gold text-lg mb-3">Account</div>
+            {email ? (
+              <>
+                <p className="text-sm text-background/70 mb-3 truncate" title={email}>Signed in as <span className="text-gold">{email}</span></p>
+                <Link to="/account"><Button variant="outline" size="sm" className="bg-transparent border-gold text-gold hover:bg-gold hover:text-ink"><UserCircle2 className="h-4 w-4 mr-1" />My Account</Button></Link>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-background/70 mb-3">Sign in to book rooms, reserve tables and place pre-orders.</p>
+                <Link to="/auth"><Button variant="outline" size="sm" className="bg-transparent border-gold text-gold hover:bg-gold hover:text-ink"><User className="h-4 w-4 mr-1" />Sign In</Button></Link>
+              </>
+            )}
           </div>
         </div>
         <div className="border-t border-background/10 py-4 text-center text-xs text-background/50">
