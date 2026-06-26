@@ -15,6 +15,7 @@ import { formatINR } from "@/lib/cart-store";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ImageUpload } from "@/components/image-upload";
 
 const roomsQO = queryOptions({ queryKey: ["owner", "rooms"], queryFn: () => ownerListRooms() });
 const dishesQO = queryOptions({ queryKey: ["owner", "dishes"], queryFn: () => ownerListDishes() });
@@ -116,7 +117,7 @@ function DishForm({ initial, onSubmit, loading }: { initial: any; onSubmit: (v: 
         <div><Label>Price (₹)</Label><Input required type="number" step="0.01" value={f.price} onChange={(e) => setF({ ...f, price: e.target.value as any })} /></div>
         <div><Label>Category</Label><Input required value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} /></div>
       </div>
-      <div><Label>Image URL</Label><Input type="url" value={f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })} /></div>
+      <div><Label>Photo</Label><ImageUpload folder="dishes" value={f.image_url} onChange={(v) => setF({ ...f, image_url: v })} /></div>
       <div className="flex items-center gap-2"><Switch checked={f.is_available} onCheckedChange={(v) => setF({ ...f, is_available: v })} /><Label>Available</Label></div>
       <Button type="submit" disabled={loading} className="w-full bg-gold text-ink hover:bg-gold/90">{loading ? "Saving..." : "Save"}</Button>
     </form>
@@ -205,7 +206,7 @@ function RoomForm({ initial, onSubmit, loading }: { initial: any; onSubmit: (v: 
         <div><Label>Capacity</Label><Input required type="number" min={1} value={f.capacity} onChange={(e) => setF({ ...f, capacity: e.target.value as any })} /></div>
         <div><Label>Units</Label><Input required type="number" min={1} value={f.total_units} onChange={(e) => setF({ ...f, total_units: e.target.value as any })} /></div>
       </div>
-      <div><Label>Image URL</Label><Input type="url" value={f.image_url} onChange={(e) => setF({ ...f, image_url: e.target.value })} /></div>
+      <div><Label>Photo</Label><ImageUpload folder="rooms" value={f.image_url} onChange={(v) => setF({ ...f, image_url: v })} /></div>
       <div><Label>Amenities (comma-separated)</Label><Input value={f.amenities} onChange={(e) => setF({ ...f, amenities: e.target.value })} /></div>
       <div className="flex items-center gap-2"><Switch checked={f.is_active} onCheckedChange={(v) => setF({ ...f, is_active: v })} /><Label>Active</Label></div>
       <Button type="submit" disabled={loading} className="w-full bg-gold text-ink hover:bg-gold/90">{loading ? "Saving..." : "Save"}</Button>
