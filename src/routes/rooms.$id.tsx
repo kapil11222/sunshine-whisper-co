@@ -13,6 +13,8 @@ import { formatINR } from "@/lib/cart-store";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Users, Check } from "lucide-react";
+import { useEffect } from "react";
+import { useAuthGate } from "@/hooks/use-auth-gate";
 
 const qo = (id: string) => queryOptions({ queryKey: ["room", id], queryFn: () => getRoom({ data: { id } }) });
 
@@ -33,6 +35,7 @@ function Page() {
   const { id } = Route.useParams();
   const { data: room } = useSuspenseQuery(qo(id));
   const book = useServerFn(createRoomBooking);
+  const { email, ensureAuth } = useAuthGate();
   const today = new Date().toISOString().slice(0, 10);
   const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
   const [form, setForm] = useState({
@@ -40,6 +43,7 @@ function Page() {
     check_in: today, check_out: tomorrow, guests: 2,
   });
   const [done, setDone] = useState<{ reference: string; total: number } | null>(null);
+  useEffect(() => { if (email && !form.email) setForm((f) => ({ ...f, email })); }, [email]);
   const mut = useMutation({
     mutationFn: () => book({ data: { ...form, room_id: id, guests: Number(form.guests) } }),
     onSuccess: (r) => { setDone(r as any); toast.success("Booking received!"); },
@@ -85,7 +89,7 @@ function Page() {
         </div>
         <Card className="p-6 border-gold/30 h-fit">
           <h2 className="font-display text-2xl">Book Your Stay</h2>
-          <form className="mt-4 space-y-3" onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}>
+          <form className="mt-4 space-y-3" onSubmit={(e) => { e.preventDefault(); if (!ensureAuth("Please sign in to book a room")) return; mut.mutate(); }}>
             <div className="grid grid-cols-2 gap-3">
               <div><Label>Check-in</Label><Input type="date" required min={today} value={form.check_in} onChange={(e) => setForm({ ...form, check_in: e.target.value })} /></div>
               <div><Label>Check-out</Label><Input type="date" required min={form.check_in} value={form.check_out} onChange={(e) => setForm({ ...form, check_out: e.target.value })} /></div>
