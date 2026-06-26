@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Users, Check } from "lucide-react";
 import { useEffect } from "react";
 import { useAuthGate } from "@/hooks/use-auth-gate";
+import { showError } from "@/lib/friendly-error";
 
 const qo = (id: string) => queryOptions({ queryKey: ["room", id], queryFn: () => getRoom({ data: { id } }) });
 
@@ -47,7 +48,7 @@ function Page() {
   const mut = useMutation({
     mutationFn: () => book({ data: { ...form, room_id: id, guests: Number(form.guests) } }),
     onSuccess: (r) => { setDone(r as any); toast.success("Booking received!"); },
-    onError: (e: any) => toast.error(e.message ?? "Failed to book"),
+    onError: (e) => showError(e, "We couldn't complete your booking. Please try again."),
   });
 
   if (done) {

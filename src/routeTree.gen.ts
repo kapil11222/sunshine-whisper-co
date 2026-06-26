@@ -22,6 +22,7 @@ import { Route as RoomsIndexRouteImport } from './routes/rooms.index'
 import { Route as RoomsIdRouteImport } from './routes/rooms.$id'
 import { Route as ReservationReferenceRouteImport } from './routes/reservation.$reference'
 import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
+import { Route as MenuIdRouteImport } from './routes/menu.$id'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAccountRouteImport } from './routes/_authenticated/account'
@@ -96,6 +97,11 @@ const OrderReferenceRoute = OrderReferenceRouteImport.update({
   path: '/order/$reference',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MenuIdRoute = MenuIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => MenuRoute,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -154,12 +160,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/help': typeof HelpRoute
-  '/menu': typeof MenuRoute
+  '/menu': typeof MenuRouteWithChildren
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/account': typeof AuthenticatedAccountRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/menu/$id': typeof MenuIdRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -177,11 +184,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/help': typeof HelpRoute
-  '/menu': typeof MenuRoute
+  '/menu': typeof MenuRouteWithChildren
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/account': typeof AuthenticatedAccountRoute
   '/api/chat': typeof ApiChatRoute
+  '/menu/$id': typeof MenuIdRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -201,12 +209,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/help': typeof HelpRoute
-  '/menu': typeof MenuRoute
+  '/menu': typeof MenuRouteWithChildren
   '/preorder': typeof PreorderRoute
   '/reserve': typeof ReserveRoute
   '/_authenticated/account': typeof AuthenticatedAccountRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/api/chat': typeof ApiChatRoute
+  '/menu/$id': typeof MenuIdRoute
   '/order/$reference': typeof OrderReferenceRoute
   '/reservation/$reference': typeof ReservationReferenceRoute
   '/rooms/$id': typeof RoomsIdRoute
@@ -232,6 +241,7 @@ export interface FileRouteTypes {
     | '/account'
     | '/dashboard'
     | '/api/chat'
+    | '/menu/$id'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/reserve'
     | '/account'
     | '/api/chat'
+    | '/menu/$id'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/account'
     | '/_authenticated/dashboard'
     | '/api/chat'
+    | '/menu/$id'
     | '/order/$reference'
     | '/reservation/$reference'
     | '/rooms/$id'
@@ -297,7 +309,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   HelpRoute: typeof HelpRoute
-  MenuRoute: typeof MenuRoute
+  MenuRoute: typeof MenuRouteWithChildren
   PreorderRoute: typeof PreorderRoute
   ReserveRoute: typeof ReserveRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -399,6 +411,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/order/$reference'
       preLoaderRoute: typeof OrderReferenceRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/menu/$id': {
+      id: '/menu/$id'
+      path: '/$id'
+      fullPath: '/menu/$id'
+      preLoaderRoute: typeof MenuIdRouteImport
+      parentRoute: typeof MenuRoute
     }
     '/api/chat': {
       id: '/api/chat'
@@ -503,6 +522,16 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface MenuRouteChildren {
+  MenuIdRoute: typeof MenuIdRoute
+}
+
+const MenuRouteChildren: MenuRouteChildren = {
+  MenuIdRoute: MenuIdRoute,
+}
+
+const MenuRouteWithChildren = MenuRoute._addFileChildren(MenuRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -510,7 +539,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   HelpRoute: HelpRoute,
-  MenuRoute: MenuRoute,
+  MenuRoute: MenuRouteWithChildren,
   PreorderRoute: PreorderRoute,
   ReserveRoute: ReserveRoute,
   ApiChatRoute: ApiChatRoute,

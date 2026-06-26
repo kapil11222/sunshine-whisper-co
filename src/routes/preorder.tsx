@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { useAuthGate } from "@/hooks/use-auth-gate";
+import { showError } from "@/lib/friendly-error";
 
 export const Route = createFileRoute("/preorder")({
   head: () => ({
@@ -64,7 +65,7 @@ function Page() {
       toast.success("Pre-order placed!");
       navigate({ to: "/order/$reference", params: { reference: ref } });
     },
-    onError: (e: any) => toast.error(e.message ?? "Failed"),
+    onError: (e) => showError(e, "We couldn't place your pre-order. Please try again."),
   });
 
   if (items.length === 0) {
