@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { MapPin, Users } from "lucide-react";
 import { FloorPlan, TABLES } from "@/components/floor-plan";
+import { useAuthGate } from "@/hooks/use-auth-gate";
 
 export const Route = createFileRoute("/reserve")({
   head: () => ({
@@ -30,10 +31,15 @@ function Page() {
   const reserve = useServerFn(createTableReservation);
   const fetchOccupied = useServerFn(listOccupiedTables);
   const navigate = useNavigate();
+  const { email, ensureAuth } = useAuthGate();
   const now = new Date(); now.setMinutes(0); now.setHours(now.getHours() + 2);
   const defaultDt = now.toISOString().slice(0, 16);
   const [form, setForm] = useState({ guest_name: "", phone: "", email: "", notes: "", reserved_at: defaultDt, party_size: 2 });
   const [tableId, setTableId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (email && !form.email) setForm((f) => ({ ...f, email }));
+  }, [email]);
 
   // Prefill from reschedule
   useEffect(() => {
@@ -131,6 +137,7 @@ function Page() {
         <Card className="p-6 border-gold/30 h-fit lg:sticky lg:top-24 bg-gradient-to-br from-card to-secondary/40 shadow-[var(--shadow-elegant)]">
           <form className="space-y-3" onSubmit={(e) => {
             e.preventDefault();
+            if (!ensureAuth("Please sign in to reserve a table")) return;
             if (!tableId) { toast.error("Please pick a table on the floor plan first"); return; }
             mut.mutate();
           }}>
