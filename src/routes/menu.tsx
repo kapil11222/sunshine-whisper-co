@@ -211,28 +211,58 @@ function CategoryPage({
         <span className="text-xs text-ink/50 tracking-widest">{pageNo} / {total}</span>
       </div>
       <ul className="mt-4 divide-y divide-gold/20">
-        {dishes.map((d) => (
-          <li key={d.id} className="py-3 flex gap-3">
-            {d.image_url && (
-              <img src={d.image_url} alt={d.name} className="h-14 w-14 rounded object-cover border border-gold/30 flex-shrink-0" />
-            )}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-baseline gap-2">
-                <h3 className="font-display text-lg text-ink truncate">{d.name}</h3>
-                <div className="flex-1 border-b border-dotted border-ink/30 translate-y-[-4px]" />
-                <div className="text-gold font-semibold whitespace-nowrap">{formatINR(Number(d.price))}</div>
-              </div>
-              {d.description && (
-                <p className="text-xs text-ink/60 mt-1 line-clamp-2 italic">{d.description}</p>
-              )}
+        {dishes.map((d, idx) => (
+          <li
+            key={d.id}
+            className="group py-3 animate-fade-in"
+            style={{ animationDelay: `${idx * 60}ms`, animationFillMode: "both" }}
+          >
+            <div className="flex gap-3 items-center rounded-md px-2 -mx-2 transition-all duration-300 hover:bg-gold/10">
+              <Link
+                to="/menu/$id"
+                params={{ id: d.id }}
+                className="flex gap-3 flex-1 min-w-0 items-center"
+                aria-label={`View ${d.name}`}
+              >
+                {d.image_url ? (
+                  <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded border border-gold/40 shadow-sm">
+                    <img
+                      src={d.image_url}
+                      alt={d.name}
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-gold/30 rounded pointer-events-none" />
+                  </div>
+                ) : (
+                  <div className="h-16 w-16 flex-shrink-0 rounded border border-gold/30 bg-gold/10 flex items-center justify-center text-gold/70 font-display text-xl">
+                    {d.name.charAt(0)}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="font-display text-lg text-ink truncate transition-colors group-hover:text-maroon">
+                      {d.name}
+                    </h3>
+                    <div className="flex-1 border-b border-dotted border-ink/30 translate-y-[-4px]" />
+                    <div className="text-gold font-semibold whitespace-nowrap font-display">
+                      {formatINR(Number(d.price))}
+                    </div>
+                  </div>
+                  {d.description && (
+                    <p className="text-xs text-ink/60 mt-1 line-clamp-2 italic">{d.description}</p>
+                  )}
+                </div>
+              </Link>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-gold/40 hover:bg-gold hover:text-ink self-center opacity-80 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onAdd(d); }}
+                aria-label={`Add ${d.name} to cart`}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
             </div>
-            <Button
-              size="sm" variant="outline"
-              className="border-gold/40 hover:bg-gold hover:text-ink self-center"
-              onClick={() => onAdd(d)}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
           </li>
         ))}
       </ul>
