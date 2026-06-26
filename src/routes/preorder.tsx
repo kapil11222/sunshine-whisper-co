@@ -11,9 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { formatINR, useCart } from "@/lib/cart-store";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Trash2, Plus, Minus } from "lucide-react";
+import { useAuthGate } from "@/hooks/use-auth-gate";
 
 export const Route = createFileRoute("/preorder")({
   head: () => ({
@@ -33,8 +34,10 @@ function Page() {
   const clear = useCart((s) => s.clear);
   const order = useServerFn(createPreOrder);
   const navigate = useNavigate();
+  const { email, ensureAuth } = useAuthGate();
   const dt = new Date(Date.now() + 2 * 3600 * 1000).toISOString().slice(0, 16);
   const [form, setForm] = useState({ guest_name: "", phone: "", email: "", notes: "", scheduled_for: dt, mode: "dine_in" as "dine_in" | "pickup" });
+  useEffect(() => { if (email && !form.email) setForm((f) => ({ ...f, email })); }, [email]);
 
   const mut = useMutation({
     mutationFn: () =>
@@ -104,7 +107,7 @@ function Page() {
         </Card>
         <Card className="p-6 border-gold/30 h-fit">
           <h2 className="font-display text-2xl mb-4">Your Details</h2>
-          <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}>
+          <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); if (!ensureAuth("Please sign in to place a pre-order")) return; mut.mutate(); }}>
             <div>
               <Label>Mode</Label>
               <Select value={form.mode} onValueChange={(v: any) => setForm({ ...form, mode: v })}>
