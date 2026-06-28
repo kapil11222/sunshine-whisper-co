@@ -107,7 +107,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
-        children: "try{var t=localStorage.getItem('ap-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark')document.documentElement.classList.add('dark');document.documentElement.style.colorScheme=t;}catch(e){}",
+        children: "try{document.documentElement.classList.remove('dark');document.documentElement.style.colorScheme='light';localStorage.setItem('ap-theme','light');}catch(e){}",
       },
     ],
   }),
