@@ -6,29 +6,24 @@ const ThemeCtx = createContext<Ctx | null>(null);
 
 function applyTheme(t: Theme) {
   if (typeof document === "undefined") return;
-  document.documentElement.classList.toggle("dark", t === "dark");
-  document.documentElement.style.colorScheme = t;
+  document.documentElement.classList.remove("dark");
+  document.documentElement.style.colorScheme = "light";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
+  const [theme] = useState<Theme>("light");
 
   useEffect(() => {
-    const stored = (typeof localStorage !== "undefined" && localStorage.getItem("ap-theme")) as Theme | null;
-    const prefersDark = typeof window !== "undefined" && window.matchMedia?.("(prefers-color-scheme: dark)").matches;
-    const initial: Theme = stored ?? (prefersDark ? "dark" : "light");
-    setThemeState(initial);
-    applyTheme(initial);
+    applyTheme("light");
+    try { localStorage.setItem("ap-theme", "light"); } catch {}
   }, []);
 
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
-    applyTheme(t);
-    try { localStorage.setItem("ap-theme", t); } catch {}
+  const setTheme = (_t: Theme) => {
+    applyTheme("light");
   };
 
   return (
-    <ThemeCtx.Provider value={{ theme, setTheme, toggle: () => setTheme(theme === "dark" ? "light" : "dark") }}>
+    <ThemeCtx.Provider value={{ theme, setTheme, toggle: () => {} }}>
       {children}
     </ThemeCtx.Provider>
   );
